@@ -1,6 +1,6 @@
 import sys
 import os
-
+from werkzeug.security import generate_password_hash
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import create_app, db
@@ -15,7 +15,7 @@ with app.app_context():
         admin = User(
             username='admin',
             full_name='Super Admin',
-            password='admin123',
+             password=generate_password_hash('admin123'),
             is_admin=True
         )
         db.session.add(admin)

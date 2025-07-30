@@ -1,0 +1,17 @@
+<h2>Login</h2>
+<form method="POST">
+  <input name="username" placeholder="Username" required>
+  <input name="password" placeholder="Password" type="password" required>
+  <button type="submit">Login</button>
+</form>
+<a href="{{ url_for('auth.register') }}">Don't have an account? Register</a>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul>
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}

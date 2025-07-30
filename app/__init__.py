@@ -1,9 +1,14 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_login import LoginManager
+from app.routes.auth import auth_bp
+# app.register_blueprint(auth_bp)
 
-db = SQLAlchemy()
-login_manager = LoginManager()
+
+# db = SQLAlchemy()
+# login_manager = LoginManager()
+from app.extensions import db, login_manager
+
 
 def create_app():
     app = Flask(__name__)
