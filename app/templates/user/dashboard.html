@@ -2,4 +2,19 @@
 {% block content %}
   <h2>User Dashboard</h2>
   <p>Welcome, {{ user.full_name }}!</p>
+  <p><a href="{{ url_for('user.my_reservation') }}">View My Reservation</a></p>
+
+  <h3>Available Parking Lots</h3>
+  {% if lots %}
+    <ul>
+      {% for lot in lots %}
+        <li>
+          {{ lot.prime_location_name }} ({{ lot.max_spots }} spots) -
+          <a href="{{ url_for('user.view_lot', lot_id=lot.id) }}">View & Reserve</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No lots available.</p>
+  {% endif %}
 {% endblock %}

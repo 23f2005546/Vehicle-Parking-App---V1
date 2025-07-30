@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Parking Lot: {{ lot.prime_location_name }}</h2>
+  <p><strong>Address:</strong> {{ lot.address }}</p>
+  <p><strong>Pin Code:</strong> {{ lot.pin_code }}</p>
+  <p><strong>Price per Unit:</strong> ₹{{ lot.price }}</p>
+
+  <h3>Available Spots</h3>
+  {% if available_spots %}
+    <ul>
+      {% for spot in available_spots %}
+        <li>
+          Spot ID: {{ spot.id }}
+          <form method="POST" action="{{ url_for('user.reserve_spot', lot_id=lot.id, spot_id=spot.id) }}" style="display:inline;">
+            <button type="submit">Reserve</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No available spots in this lot.</p>
+  {% endif %}
+{% endblock %}

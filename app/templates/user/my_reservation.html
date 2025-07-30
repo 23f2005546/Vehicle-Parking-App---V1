@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>My Reservation</h2>
+
+  {% if reservation %}
+    <p><strong>Lot:</strong> {{ reservation.spot.lot.prime_location_name }}</p>
+    <p><strong>Spot ID:</strong> {{ reservation.spot.id }}</p>
+    <p><strong>Cost:</strong> ₹{{ reservation.cost_per_unit }}</p>
+    <p><strong>Reserved At:</strong> {{ reservation.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+
+    <form method="POST" action="{{ url_for('user.cancel_reservation') }}">
+      <button type="submit">Cancel Reservation</button>
+    </form>
+  {% else %}
+    <p>You have no reservation.</p>
+  {% endif %}
+
+  <p><a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a></p>
+{% endblock %}

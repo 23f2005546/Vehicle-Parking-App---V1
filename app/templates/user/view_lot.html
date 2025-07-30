@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>{{ lot.prime_location_name }}</h2>
+  <p>Available Spots: {{ spots|length }}</p>
+
+  {% if spots %}
+    <ul>
+      {% for spot in spots %}
+        <li>
+          Spot ID: {{ spot.id }}
+          <form action="{{ url_for('user.reserve_spot', spot_id=spot.id) }}" method="POST" style="display:inline;">
+            <button type="submit">Reserve</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No available spots.</p>
+  {% endif %}
+
+  <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
+{% endblock %}

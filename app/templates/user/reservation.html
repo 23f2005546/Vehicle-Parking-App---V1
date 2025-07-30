@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>My Reservation</h2>
+
+  {% if reservation %}
+    <p><strong>Spot ID:</strong> {{ reservation.spot.id }}</p>
+    <p><strong>Lot:</strong> {{ reservation.spot.lot.prime_location_name }}</p>
+    <p><strong>Parking Time:</strong> {{ reservation.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <p><strong>Cost Per Unit:</strong> ₹{{ reservation.cost_per_unit }}</p>
+  {% else %}
+    <p>You have no reservation currently.</p>
+  {% endif %}
+{% endblock %}
