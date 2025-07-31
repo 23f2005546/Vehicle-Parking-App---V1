@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Registered Users</h2>
+
+  {% if users_data %}
+    <table border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Full Name</th>
+          <th>Current Reservation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in users_data %}
+          <tr>
+            <td>{{ entry.user.username }}</td>
+            <td>{{ entry.user.full_name }}</td>
+            <td>
+              {% if entry.reservation %}
+                Lot: {{ entry.reservation.spot.lot.prime_location_name }},
+                Spot ID: {{ entry.reservation.spot.id }},
+                Start: {{ entry.reservation.parking_time.strftime('%Y-%m-%d %H:%M') }}
+              {% else %}
+                No active reservation
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No users found.</p>
+  {% endif %}
+
+  <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
+{% endblock %}
