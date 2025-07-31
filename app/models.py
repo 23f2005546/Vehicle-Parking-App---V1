@@ -1,6 +1,4 @@
-# from app import db
 from app.extensions import db
-
 from flask_login import UserMixin
 from datetime import datetime
 
@@ -26,12 +24,11 @@ class ParkingLot(db.Model):
 class ParkingSpot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), nullable=False)
-    spot_number = db.Column(db.Integer, nullable=False)  
-    is_available = db.Column(db.Boolean, default=True)    
-    status = db.Column(db.String(1), default='A')        
+    spot_number = db.Column(db.Integer, nullable=False)
+    is_available = db.Column(db.Boolean, default=True)
+    status = db.Column(db.String(1), default='A')  # A = Available, O = Occupied
 
     reservation = db.relationship('Reservation', backref='spot', uselist=False)
-
 
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -4,6 +4,8 @@
   <p>Welcome, {{ user.full_name }}!</p>
 
   <a href="{{ url_for('admin.create_lot') }}">Create Parking Lot</a>
+  <p><a href="{{ url_for('admin.view_all_reservations') }}">View All Reservations</a></p>
+
 
   <h3>Existing Lots</h3>
   {% for lot in lots %}

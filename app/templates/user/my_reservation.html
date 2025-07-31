@@ -3,17 +3,26 @@
   <h2>My Reservation</h2>
 
   {% if reservation %}
-    <p><strong>Lot:</strong> {{ reservation.spot.lot.prime_location_name }}</p>
     <p><strong>Spot ID:</strong> {{ reservation.spot.id }}</p>
-    <p><strong>Cost:</strong> ₹{{ reservation.cost_per_unit }}</p>
-    <p><strong>Reserved At:</strong> {{ reservation.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <p><strong>Lot:</strong> {{ reservation.spot.lot.prime_location_name }}</p>
+    <p><strong>Parking Time:</strong> {{ reservation.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <p><strong>Cost Per Unit:</strong> ₹{{ reservation.cost_per_unit }}</p>
 
-    <form method="POST" action="{{ url_for('user.cancel_reservation') }}">
-      <button type="submit">Cancel Reservation</button>
-    </form>
+    {% if reservation.leaving_time %}
+      <p><strong>Left At:</strong> {{ reservation.leaving_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+      <p><strong>Total Cost:</strong> ₹{{ total_cost }}</p>
+    {% else %}
+      <form method="POST" action="{{ url_for('user.leave_parking') }}">
+        <button type="submit">Leave Parking</button>
+      </form>
+      <form method="POST" action="{{ url_for('user.cancel_reservation') }}">
+        <button type="submit">Cancel Reservation</button>
+      </form>
+    {% endif %}
+
   {% else %}
-    <p>You have no reservation.</p>
+    <p>You have no reservation currently.</p>
   {% endif %}
 
-  <p><a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a></p>
+  <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
 {% endblock %}
