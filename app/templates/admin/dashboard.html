@@ -1,24 +1,31 @@
 {% extends 'base.html' %}
+
 {% block content %}
   <h2>Admin Dashboard</h2>
   <p>Welcome, {{ user.full_name }}!</p>
 
-  <a href="{{ url_for('admin.create_lot') }}">Create Parking Lot</a>
-  <p><a href="{{ url_for('admin.view_all_reservations') }}">View All Reservations</a></p>
-  <p><a href="{{ url_for('admin.download_reservations') }}">Download Reservations CSV</a></p>
-  <!-- <p><a href="{{ url_for('admin.view_all_reservations') }}">View All Reservations</a></p> -->
-<p><a href="{{ url_for('admin.view_users') }}">View All Users</a></p>
-
-
+  <a href="{{ url_for('admin.create_lot') }}" class="btn btn-success mb-3">Create Parking Lot</a>
+  <a href="{{ url_for('admin.view_all_reservations') }}" class="btn btn-info mb-3">View All Reservations</a>
+  <a href="{{ url_for('admin.view_users') }}" class="btn btn-secondary mb-3">View All Users</a>
 
   <h3>Existing Lots</h3>
-  {% for lot in lots %}
-    <div>
-      <strong>{{ lot.prime_location_name }}</strong><br>
-      Price: {{ lot.price }}<br>
-      Spots: {{ lot.max_spots }}<br><br>
+  {% if lots %}
+    <div class="row">
+      {% for lot in lots %}
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">{{ lot.prime_location_name }}</h5>
+              <p class="card-text">
+                Price: ₹{{ lot.price }}<br>
+                Max Spots: {{ lot.max_spots }}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
     </div>
   {% else %}
     <p>No lots added yet.</p>
-  {% endfor %}
+  {% endif %}
 {% endblock %}

@@ -1,38 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Registered Users</h2>
+  <div class="container mt-4">
+    <h2 class="mb-4">Registered Users</h2>
 
-  {% if users_data %}
-    <table border="1" cellpadding="5" cellspacing="0">
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Full Name</th>
-          <th>Current Reservation</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for entry in users_data %}
-          <tr>
-            <td>{{ entry.user.username }}</td>
-            <td>{{ entry.user.full_name }}</td>
-            <td>
-              {% if entry.reservation %}
-                Lot: {{ entry.reservation.spot.lot.prime_location_name }},
-                Spot ID: {{ entry.reservation.spot.id }},
-                Start: {{ entry.reservation.parking_time.strftime('%Y-%m-%d %H:%M') }}
-              {% else %}
-                No active reservation
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No users found.</p>
-  {% endif %}
+    {% if users_data %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Username</th>
+              <th>Full Name</th>
+              <th>Active Reservation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in users_data %}
+              <tr>
+                <td>{{ entry.user.username }}</td>
+                <td>{{ entry.user.full_name }}</td>
+                <td>
+                  {% if entry.reservation %}
+                    Lot: {{ entry.reservation.spot.lot.prime_location_name }}<br>
+                    Spot #: {{ entry.reservation.spot.spot_number }}<br>
+                    Start: {{ entry.reservation.parking_time.strftime('%Y-%m-%d %H:%M') }}
+                  {% else %}
+                    <span class="text-muted">No active reservation</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="alert alert-warning">No users found.</div>
+    {% endif %}
 
-  <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+  </div>
 {% endblock %}

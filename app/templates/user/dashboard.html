@@ -1,20 +1,29 @@
 {% extends 'base.html' %}
-{% block content %}
-  <h2>User Dashboard</h2>
-  <p>Welcome, {{ user.full_name }}!</p>
-  <p><a href="{{ url_for('user.my_reservation') }}">View My Reservation</a></p>
 
-  <h3>Available Parking Lots</h3>
-  {% if lots %}
-    <ul>
-      {% for lot in lots %}
-        <li>
-          {{ lot.prime_location_name }} ({{ lot.max_spots }} spots) -
-          <a href="{{ url_for('user.view_lot', lot_id=lot.id) }}">View & Reserve</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No lots available.</p>
-  {% endif %}
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Welcome, {{ user.full_name }}!</h2>
+
+    <h4 class="mb-3">Available Parking Lots</h4>
+    {% if lots %}
+      <div class="row">
+        {% for lot in lots %}
+          <div class="col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">{{ lot.prime_location_name }}</h5>
+                <p class="card-text">
+                  ₹{{ lot.price }} per hour<br>
+                  Max Spots: {{ lot.max_spots }}
+                </p>
+                <a href="{{ url_for('user.view_lot', lot_id=lot.id) }}" class="btn btn-outline-primary">View Spots</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-warning">No parking lots available.</div>
+    {% endif %}
+  </div>
 {% endblock %}

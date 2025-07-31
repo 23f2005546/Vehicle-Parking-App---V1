@@ -1,16 +1,5 @@
-from flask import Flask
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_login import LoginManager
-from app.routes.auth import auth_bp
-# from app import errors  # noqa: F401
-
-# app.register_blueprint(auth_bp)
-
-
-# db = SQLAlchemy()
-# login_manager = LoginManager()
+from flask import Flask, redirect, url_for
 from app.extensions import db, login_manager
-
 
 def create_app():
     app = Flask(__name__)
@@ -25,19 +14,20 @@ def create_app():
     from app.routes.admin import admin_bp
     from app.routes.user import user_bp
     from app.routes.auth import auth_bp
+    from app.errors import register_error_handlers
 
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(auth_bp)
-    from app.errors import register_error_handlers
+
     register_error_handlers(app)
 
     with app.app_context():
         from app import models
         db.create_all()
 
+    @app.route('/')
+    def home():
+        return redirect(url_for('auth.login'))
+
     return app
-
-
-
-

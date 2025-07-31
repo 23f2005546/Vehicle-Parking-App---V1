@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
+
 {% block content %}
-  <h2>Something Went Wrong</h2>
-  <p>We're working on it. Try again later or contact support.</p>
-  <a href="{{ url_for('auth.login') }}">Go Home</a>
+  <div class="container text-center mt-5">
+    <h1 class="display-4 text-danger">500</h1>
+    <p class="lead">Something went wrong on our end.</p>
+    <p>We're working to fix it. Please try again later.</p>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-primary mt-3">Go to Home</a>
+  </div>
 {% endblock %}

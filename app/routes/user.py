@@ -18,14 +18,18 @@ def dashboard():
 @user_bp.route('/my-reservation')
 @login_required
 def my_reservation():
-    reservation = Reservation.query.filter_by(user_id=current_user.id).first()
-    cost = None
+    reservations = Reservation.query.filter_by(user_id=current_user.id).all()
 
-    if reservation and reservation.leaving_time:
-        hours = (reservation.leaving_time - reservation.parking_time).total_seconds() / 3600
-        cost = round(hours * reservation.cost_per_unit, 2)
+    results = []
+    for res in reservations:
+        cost = None
+        if res.leaving_time:
+            duration = (res.leaving_time - res.parking_time).total_seconds() / 3600
+            cost = round(duration * res.cost_per_unit, 2)
+        results.append((res, cost))
 
-    return render_template('user/my_reservation.html', reservation=reservation, total_cost=cost)
+    return render_template('user/my_reservation.html', reservations=results)
+
 
 
 @user_bp.route('/lot/<int:lot_id>')
@@ -39,12 +43,8 @@ def view_lot(lot_id):
 @user_bp.route('/lot/<int:lot_id>/reserve/<int:spot_id>', methods=['POST'])
 @login_required
 def reserve_spot(lot_id, spot_id):
-    already_booked = Reservation.query.filter_by(user_id=current_user.id).first()
-    if already_booked:
-        flash("You already have a reservation.")
-        return redirect(url_for('user.my_reservation'))
-
     spot = ParkingSpot.query.get_or_404(spot_id)
+
     if spot.status != 'A':
         flash("Spot is already taken.")
         return redirect(url_for('user.view_lot', lot_id=lot_id))
@@ -52,47 +52,54 @@ def reserve_spot(lot_id, spot_id):
     spot.status = 'O'
     spot.is_available = False
 
-    reservation = Reservation(
+    new_reservation = Reservation(
         spot_id=spot.id,
         user_id=current_user.id,
         cost_per_unit=spot.lot.price
     )
-    db.session.add(reservation)
+    db.session.add(new_reservation)
     db.session.commit()
+
     flash("Reservation successful.")
     return redirect(url_for('user.my_reservation'))
+
 
 
 @user_bp.route('/leave', methods=['POST'])
 @login_required
 def leave_parking():
-    reservation = Reservation.query.filter_by(user_id=current_user.id, leaving_time=None).first()
+    reservation_id = request.form.get('reservation_id')
+    reservation = Reservation.query.filter_by(id=reservation_id, user_id=current_user.id, leaving_time=None).first()
 
     if not reservation:
-        flash("No active reservation to end.")
+        flash("Invalid reservation or already left.")
         return redirect(url_for('user.my_reservation'))
 
     reservation.leaving_time = datetime.utcnow()
     db.session.commit()
-    flash("Left parking. Reservation completed.")
+
+    flash("You have left the parking spot.")
     return redirect(url_for('user.my_reservation'))
+
 
 
 @user_bp.route('/cancel', methods=['POST'])
 @login_required
 def cancel_reservation():
-    reservation = Reservation.query.filter_by(user_id=current_user.id, leaving_time=None).first()
+    reservation_id = request.form.get('reservation_id')
+    reservation = Reservation.query.filter_by(id=reservation_id, user_id=current_user.id, leaving_time=None).first()
 
     if not reservation:
-        flash("No active reservation to cancel.")
+        flash("No active reservation found to cancel.")
         return redirect(url_for('user.my_reservation'))
 
     spot = reservation.spot
-    db.session.delete(reservation)
-
     spot.status = 'A'
     spot.is_available = True
+
+    db.session.delete(reservation)
     db.session.commit()
 
-    flash("Reservation cancelled.")
+    flash("Reservation cancelled successfully.")
     return redirect(url_for('user.my_reservation'))
+

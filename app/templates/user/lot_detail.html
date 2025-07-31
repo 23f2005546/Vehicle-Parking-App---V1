@@ -1,25 +1,32 @@
 {% extends 'base.html' %}
+
 {% block content %}
-  <h2>Parking Lot: {{ lot.prime_location_name }}</h2>
-  <p><strong>Address:</strong> {{ lot.address }}</p>
-  <p><strong>Pin Code:</strong> {{ lot.pin_code }}</p>
-  <p><strong>Price per Unit:</strong> ₹{{ lot.price }}</p>
+  <div class="container mt-4">
+    <h2 class="mb-4">Lot: {{ lot.prime_location_name }}</h2>
 
-  <h3>Available Spots</h3>
-  {% if available_spots %}
-    <ul>
-      {% for spot in available_spots %}
-        <li>
-          Spot ID: {{ spot.id }}
-          <form method="POST" action="{{ url_for('user.reserve_spot', lot_id=lot.id, spot_id=spot.id) }}" style="display:inline;">
-            <button type="submit">Reserve</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No available spots in this lot.</p>
-  {% endif %}
-    <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
+    <p><strong>Location:</strong> {{ lot.address }}, {{ lot.pin_code }}</p>
+    <p><strong>Cost:</strong> ₹{{ lot.price }} per hour</p>
 
+    {% if available_spots %}
+      <h5 class="mt-4">Available Spots</h5>
+      <div class="row">
+        {% for spot in available_spots %}
+          <div class="col-md-3 mb-3">
+            <form action="{{ url_for('user.reserve_spot', lot_id=lot.id, spot_id=spot.id) }}" method="POST">
+              <div class="card text-center h-100">
+                <div class="card-body">
+                  <h6>Spot #{{ spot.spot_number }}</h6>
+                  <button type="submit" class="btn btn-success mt-2">Reserve</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info">No spots available in this lot.</div>
+    {% endif %}
+
+    <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+  </div>
 {% endblock %}

@@ -1,25 +1,35 @@
 {% extends 'base.html' %}
+
 {% block content %}
-  <h2>Create Parking Lot</h2>
-  <form method="POST">
-    <label>Location Name:</label><br>
-    <input type="text" name="prime_location_name" required><br><br>
+  <div class="container mt-4">
+    <h2 class="mb-4">Create Parking Lot</h2>
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Location Name</label>
+        <input type="text" name="prime_location_name" class="form-control" required>
+      </div>
 
-    <label>Price:</label><br>
-    <input type="number" name="price" step="0.01" required><br><br>
+      <div class="mb-3">
+        <label class="form-label">Price (per hour)</label>
+        <input type="number" name="price" class="form-control" step="0.01" required>
+      </div>
 
-    <label>Address:</label><br>
-    <input type="text" name="address"><br><br>
+      <div class="mb-3">
+        <label class="form-label">Address</label>
+        <input type="text" name="address" class="form-control">
+      </div>
 
-    <label>Pincode:</label><br>
-    <input type="text" name="pin_code"><br><br>
+      <div class="mb-3">
+        <label class="form-label">Pincode</label>
+        <input type="text" name="pin_code" class="form-control">
+      </div>
 
-    <label>Max Spots:</label><br>
-    <input type="number" name="max_spots" required><br><br>
+      <div class="mb-3">
+        <label class="form-label">Max Parking Spots</label>
+        <input type="number" name="max_spots" class="form-control" required>
+      </div>
 
-    <button type="submit">Create Lot</button>
-  </form>
-    <br><br>
-  <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
-
+      <button type="submit" class="btn btn-success">Create Lot</button>
+    </form>
+  </div>
 {% endblock %}

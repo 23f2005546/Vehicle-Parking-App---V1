@@ -34,11 +34,9 @@ def download_reservations():
 
     reservations = Reservation.query.order_by(Reservation.parking_time.desc()).all()
 
-    # Use StringIO to write CSV in-memory
     output = StringIO()
     writer = csv.writer(output)
 
-    # Write header
     writer.writerow(['Reservation ID', 'Username', 'Full Name', 'Lot', 'Spot ID', 'Start Time', 'End Time', 'Cost'])
 
     for r in reservations:
