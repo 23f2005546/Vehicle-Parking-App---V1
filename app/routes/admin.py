@@ -2,7 +2,9 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from app.extensions import db
 from app.models import User, Reservation, ParkingLot, ParkingSpot
-
+import csv
+from io import StringIO
+from flask import make_response
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin_bp.route('/dashboard')
@@ -23,6 +25,38 @@ def view_all_reservations():
 
     reservations = Reservation.query.order_by(Reservation.parking_time.desc()).all()
     return render_template('admin/all_reservations.html', reservations=reservations)
+
+@admin_bp.route('/download-reservations')
+@login_required
+def download_reservations():
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    reservations = Reservation.query.order_by(Reservation.parking_time.desc()).all()
+
+    # Use StringIO to write CSV in-memory
+    output = StringIO()
+    writer = csv.writer(output)
+
+    # Write header
+    writer.writerow(['Reservation ID', 'Username', 'Full Name', 'Lot', 'Spot ID', 'Start Time', 'End Time', 'Cost'])
+
+    for r in reservations:
+        writer.writerow([
+            r.id,
+            r.user.username,
+            r.user.full_name,
+            r.spot.lot.prime_location_name,
+            r.spot.id,
+            r.parking_time.strftime('%Y-%m-%d %H:%M'),
+            r.leaving_time.strftime('%Y-%m-%d %H:%M') if r.leaving_time else '',
+            r.cost_per_unit
+        ])
+
+    response = make_response(output.getvalue())
+    response.headers["Content-Disposition"] = "attachment; filename=all_reservations.csv"
+    response.headers["Content-type"] = "text/csv"
+    return response
 
 
 @admin_bp.route('/create_lot', methods=['GET', 'POST'])
