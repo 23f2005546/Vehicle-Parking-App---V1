@@ -9,9 +9,14 @@
   <a href="{{ url_for('admin.view_users') }}" class="btn btn-secondary mb-3">View All Users</a>
 
   <h3>Existing Lots</h3>
+
   {% if lots %}
     <div class="row">
       {% for lot in lots %}
+        <form method="POST" action="{{ url_for('admin.delete_lot', lot_id=lot.id) }}" onsubmit="return confirm('Are you sure you want to delete this lot?');">
+          <button type="submit" class="btn btn-danger btn-sm">Delete Lot</button>
+        </form>
+
         <div class="col-md-4">
           <div class="card mb-3">
             <div class="card-body">

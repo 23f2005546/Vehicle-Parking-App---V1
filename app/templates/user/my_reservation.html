@@ -1,32 +1,31 @@
 {% extends 'base.html' %}
+
 {% block content %}
   <h2>Your Reservations</h2>
 
   {% if reservations %}
-    {% for res, cost in reservations %}
-      <div class="card mb-3">
-        <div class="card-body">
-          <p><strong>Lot:</strong> {{ res.spot.lot.prime_location_name }}</p>
-          <p><strong>Spot:</strong> #{{ res.spot.spot_number }}</p>
-          <p><strong>Start:</strong> {{ res.parking_time.strftime('%Y-%m-%d %H:%M') }}</p>
-          {% if res.leaving_time %}
-            <p><strong>Left At:</strong> {{ res.leaving_time.strftime('%Y-%m-%d %H:%M') }}</p>
-            <p><strong>Total Cost:</strong> ₹{{ cost }}</p>
-          {% else %}
-            <form method="POST" action="{{ url_for('user.leave_parking') }}">
-              <input type="hidden" name="reservation_id" value="{{ res.id }}">
-              <button type="submit" class="btn btn-warning btn-sm">Leave Parking</button>
-            </form>
-            <form method="POST" action="{{ url_for('user.cancel_reservation') }}">
-              <input type="hidden" name="reservation_id" value="{{ res.id }}">
-              <button type="submit" class="btn btn-danger btn-sm">Cancel Reservation</button>
-            </form>
-          {% endif %}
-        </div>
+    {% for res in reservations %}
+      <div class="card p-3 mb-3">
+        <p><strong>Lot:</strong> {{ res.spot.lot.prime_location_name }}</p>
+        <p><strong>Spot:</strong> #{{ res.spot.spot_number }}</p>
+        <p><strong>Start:</strong> {{ res.parking_time.strftime('%Y-%m-%d %H:%M') }}</p>
+
+        {% if res.leaving_time %}
+          <p><strong>Left At:</strong> {{ res.leaving_time.strftime('%Y-%m-%d %H:%M') }}</p>
+          <p><strong>Total Cost:</strong> ₹{{ ((res.leaving_time - res.parking_time).total_seconds() / 3600) | round(2) * res.cost_per_unit }}</p>
+        {% else %}
+          <form method="POST" action="{{ url_for('user.leave_parking', reservation_id=res.id) }}">
+            <button class="btn btn-success btn-sm">Leave</button>
+          </form>
+          <form method="POST" action="{{ url_for('user.cancel_reservation', reservation_id=res.id) }}" class="mt-2">
+            <button class="btn btn-danger btn-sm">Cancel</button>
+          </form>
+        {% endif %}
       </div>
     {% endfor %}
   {% else %}
     <p>No reservations yet.</p>
   {% endif %}
+  <a class="btn btn-secondary mt-3" href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
 
 {% endblock %}

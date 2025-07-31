@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for
 from app.extensions import db, login_manager
+from app.models import User
 
 def create_app():
     app = Flask(__name__)
@@ -10,6 +11,10 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
     from app.routes.admin import admin_bp
     from app.routes.user import user_bp
