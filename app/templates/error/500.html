@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Something Went Wrong</h2>
+  <p>We're working on it. Try again later or contact support.</p>
+  <a href="{{ url_for('auth.login') }}">Go Home</a>
+{% endblock %}
